@@ -47,4 +47,12 @@ export class TokensService {
   async deleteTokensByUserId(userId: number): Promise<void> {
     await this.pool.query('DELETE FROM tokens WHERE user_id = $1', [userId]);
   }
+
+  async findTokensByUserId(userId: number): Promise<any> {
+    const result = await this.pool.query(
+      'SELECT access_token, refresh_token FROM tokens WHERE user_id = $1',
+      [userId],
+    );
+    return result.rows[0];
+  }
 }

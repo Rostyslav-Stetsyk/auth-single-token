@@ -29,4 +29,11 @@ export class AuthController {
 
     return token;
   }
+
+  @Post('register')
+  async register(@Body() body: { username: string; password: string }) {
+    await this.authService.register(body.username, body.password);
+
+    return await this.login(body);
+  }
 }

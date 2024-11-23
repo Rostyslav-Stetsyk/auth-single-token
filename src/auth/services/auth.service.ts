@@ -12,6 +12,10 @@ export class AuthService {
     private readonly tokensService: TokensService,
   ) {}
 
+  async register(username: string, password: string): Promise<any> {
+    await this.usersService.createUser(username, password);
+  }
+
   async validateUser(username: string, password: string): Promise<any> {
     const user = await this.usersService.findPasswordUsername(username);
     if (!user) return null;
@@ -25,6 +29,12 @@ export class AuthService {
 
   async login(user: any) {
     const payload = { username: user.username, sub: user.id };
+
+    const tokens = await this.tokensService.findTokensByUserId(user.id);
+    console.log(tokens);
+
+    if (tokens) return tokens;
+
     const accessToken = this.jwtService.sign(payload, { expiresIn: '3h' });
     const refreshToken = this.jwtService.sign(payload, { expiresIn: '7d' });
 
